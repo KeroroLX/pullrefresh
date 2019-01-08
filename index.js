@@ -9,7 +9,6 @@ var lxpullresh = {
     install: function(Vue){
         Vue.component('lx_pulltodown',pulltodown)//定义组件
         Vue.component('lx_pulltotop',pulltotop)
-
     }
 }
 

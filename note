@@ -1,0 +1,56 @@
+【下拉的主要用法】
+<lx_pulltotop :nomore='listOption.nomore' v-on:listenToDown='refreshData' v-on:listenToTop='loadMoreData'>
+        <ul slot='content' class='goodsList clearfix'>
+          <li v-for='item in listOption.listData'>
+            <a href="javscript:;">
+              <img :src="item.albums[0]" :alt="item.title">
+              <p class="title">{{item.title}}</p>
+            </a>
+          </li>
+        </ul>
+      </lx_pulltotop>
+
+
+  listOption:{
+          listData:[],
+          num:0,
+          size:20,
+          nomore:true,//控制加载
+          total:''
+        },
+
+          created: function () {
+              this.getListData()
+            },
+
+             getListData:function(){
+                    var _this=this;
+                    var param='?key=98f82040a59c5936f55cf0a463c7bd49&pn='+_this.listOption.num+'&rn='+this.listOption.size+'&menu=肉';
+                    this.$method().jsonP(this,'cook/query.php'+param,function(data){
+                      console.log(param);
+                      var resultData=data.result;
+                      var datas=resultData.data;
+                      _this.listOption.total=resultData.totalNum;
+                      for(var i=0;i<datas.length;i++){
+                        _this.listOption.listData.push(datas[i])
+                      }
+                      if(_this.listOption.num>=_this.listOption.total){
+                        _this.listOption.nomore=true;
+                      }else{
+                        _this.listOption.nomore=false;
+                      }
+                    });
+                  },
+                  loadMoreData:function(){
+                    var _this=this;
+                    if( _this.listOption.nomore){
+                      return;
+                    }
+                    _this.listOption.num+=1;
+                    _this.getListData();
+                  },
+                  refreshData:function(){
+                    this.listOption.num=0;
+                    this.listOption.listData=[];
+                    this.getListData();
+                  }
